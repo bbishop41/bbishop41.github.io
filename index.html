@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Graphics Group Project</title>
+    <style>
+        html, body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
+    </style>
+    <script src="babylon.2.3.js"></script>
+</head>
+<body>
+<script src="content.js"></script>
+<script src="gamelogic.js"></script>
+<canvas id="renderCanvas"></canvas>
+<script type="text/javascript">
+    var canvas = document.querySelector("#renderCanvas");
+    var engine, camera, scene, background, light, playerShip, rock, laser;
+    var projectiles = [];
+    var projectileBounds = [];
+    var asteroids = [];
+    var asteroidBounds = [];
+    var contentLoaded = false;
+    var score = 0;
+    var previousShot = 0;
+    var previousAsteroid = 0;
+    var d = new Date();
+
+    LoadContent();
+
+    function handleKeyDown(evt){
+
+        // right arrow
+        if (evt.keyCode==39){
+            playerShip.position.x += 0.2;
+        }
+
+        // left arrow
+        if (evt.keyCode==37){
+            playerShip.position.x -= 0.2;
+        }
+
+        // space
+        if (evt.keyCode==32){
+            shootLaser();
+        }
+    }
+
+    window.addEventListener("keydown", handleKeyDown, false);
+
+    engine.runRenderLoop(function () {
+        scene.render();
+
+        if (contentLoaded){
+            background.position.y -= 0.1;
+            if (projectiles.length > 0){
+                updateProjectiles();
+            }
+            spawnAsteroid();
+            updateAsteroid();
+            checkCollisions();
+            updateScore(score);
+            //playerShip.rotation.x += 0.01;
+            //playerShip.rotation.z += 0.01;
+            console.log("X is: " + playerShip.rotation.x);
+            console.log("Y is: " + playerShip.rotation.z);
+        }
+
+    });
+    window.addEventListener("resize", function () {
+        engine.resize();
+    });
+</script>
+</body>
+</html>
